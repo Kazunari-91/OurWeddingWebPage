@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>お品書き | Wedding</title>
+  <meta name="robots" content="noindex,nofollow">
+  <style>
+    :root{--bg:#fffaf3;--card:#fff;--ink:#3f342c;--sub:#7f6b5d;--accent:#c97947;--line:#ead8c8}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink)}
+    .wrap{max-width:760px;margin:auto;padding:26px 18px 48px}
+    .back{text-decoration:none;color:var(--accent);font-size:14px}
+    h1{font-family:Georgia,serif;font-weight:500;font-size:34px;margin:26px 0 8px}
+    .intro{color:var(--sub);margin:0 0 22px;line-height:1.8}
+    .sheet{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px 22px}
+    .course{display:grid;grid-template-columns:5.2em 1fr;gap:4px 14px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line)}
+    .course:last-child{border-bottom:0}
+    .kind{color:var(--accent);font-size:13px;letter-spacing:.14em}
+    .dish{font-size:17px;line-height:1.7}
+    .note{grid-column:2;margin:0;color:var(--sub);font-size:13px;line-height:1.7}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" id="backLink" href="index.html">← Topへ戻る</a>
+    <h1>お品書き</h1>
+    <p class="intro">本日、皆さまとご一緒するお料理です。</p>
+
+    <section class="sheet">
+      <article class="course">
+        <div class="kind">前菜</div>
+        <div class="dish">料理名</div>
+      </article>
+      <article class="course">
+        <div class="kind">椀物</div>
+        <div class="dish">料理名</div>
+      </article>
+      <article class="course">
+        <div class="kind">お造り</div>
+        <div class="dish">料理名</div>
+      </article>
+      <article class="course">
+        <div class="kind">焼き物</div>
+        <div class="dish">料理名</div>
+      </article>
+      <article class="course">
+        <div class="kind">強肴</div>
+        <div class="dish">料理名</div>
+      </article>
+      <article class="course">
+        <div class="kind">食事</div>
+        <div class="dish">料理名</div>
+      </article>
+      <article class="course">
+        <div class="kind">水菓子</div>
+        <div class="dish">料理名</div>
+      </article>
+      <article class="course">
+        <div class="kind">お飲物</div>
+        <div class="dish">料理名</div>
+        <p class="note">ビール、日本酒、ソフトドリンク など</p>
+      </article>
+    </section>
+  </main>
+<script>
+const guest = new URLSearchParams(location.search).get("guest");
+if (guest) document.getElementById("backLink").href = "index.html?guest=" + encodeURIComponent(guest);
+</script>
+</body>
+</html>

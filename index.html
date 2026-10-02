@@ -37,18 +37,20 @@
       animation:draw 1.8s ease .15s forwards;
     }
     .ridge.back{stroke-width:2.1;animation-delay:.42s}
-    .past-trail{
+    .trail-reveal{
       fill:none;
-      stroke-width:2.6;
+      stroke:#fff;
+      stroke-width:52;
       stroke-linecap:round;
       stroke-linejoin:round;
-      stroke-dasharray:1000;
-      stroke-dashoffset:1000;
+      stroke-dasharray:1100;
+      stroke-dashoffset:1100;
       animation:draw 1.4s ease forwards;
     }
+    .trail-fill{stroke:none}
     .past-left{animation-delay:1s}
     .past-right{animation-delay:1.12s}
-    .sun,.cloud,.tree{opacity:0;animation:fadeIn .8s ease forwards}
+    .sun,.cloud{opacity:0;animation:fadeIn .8s ease forwards}
     .sun{fill:var(--gold);animation-delay:.7s}
     .cloud{
       fill:none;
@@ -58,12 +60,20 @@
       stroke-linejoin:round;
       animation-delay:.8s;
     }
-    .tree{
+    .tree{opacity:0;animation:fadeIn .8s ease forwards}
+    .tree .trunk{
       fill:none;
-      stroke:var(--green);
-      stroke-width:2.15;
+      stroke:#6b5344;
+      stroke-width:2.6;
       stroke-linecap:round;
+    }
+    .tree .bough{
+      fill:#7c8c6c;
+      fill-opacity:.28;
+      stroke:var(--green);
+      stroke-width:1.65;
       stroke-linejoin:round;
+      stroke-linecap:round;
     }
     .t1{animation-delay:.9s}
     .t2{animation-delay:1.05s}
@@ -197,14 +207,16 @@
     .message{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;margin:14px 0 26px;box-shadow:0 7px 20px rgba(70,40,20,.05)}
     .message h2{margin:0 0 12px;font-size:21px}
     .message p{line-height:1.9;margin:0;white-space:pre-line}
-    .menu{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .menu{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
     .card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 18px;min-height:145px}
     .card .icon{font-size:30px}
     .card h3{margin:12px 0 5px}
     .card p{margin:0;color:var(--sub);font-size:14px;line-height:1.6}
     footer{text-align:center;color:var(--sub);font-size:12px;margin-top:38px}
-    @media(max-width:520px){
+    @media(max-width:720px){
       .menu{grid-template-columns:1fr}
+    }
+    @media(max-width:520px){
       .intro{height:min(78vh,560px);margin-top:8px}
     }
   </style>
@@ -213,22 +225,28 @@
   <section class="intro" id="stage" aria-label="イントロ">
     <svg viewBox="0 0 840 680" aria-hidden="true">
       <defs>
-        <linearGradient id="trailLeftGradient" x1="0%" y1="100%" x2="100%" y2="0%">
-          <stop offset="0%"   stop-color="#b56f49" stop-opacity="0.08"/>
-          <stop offset="14%"  stop-color="#b56f49" stop-opacity="0.65"/>
-          <stop offset="35%"  stop-color="#b56f49" stop-opacity="1"/>
-          <stop offset="72%"  stop-color="#b56f49" stop-opacity="1"/>
-          <stop offset="90%"  stop-color="#b56f49" stop-opacity="0.55"/>
-          <stop offset="100%" stop-color="#b56f49" stop-opacity="0.06"/>
+        <linearGradient id="trailFillLeft" gradientUnits="userSpaceOnUse" x1="140" y1="490" x2="420" y2="290">
+          <stop offset="0%" stop-color="#edd7a2" stop-opacity="0"/>
+          <stop offset="32%" stop-color="#e8d0a0" stop-opacity="0.5"/>
+          <stop offset="58%" stop-color="#e4cc96" stop-opacity="0.46"/>
+          <stop offset="82%" stop-color="#ead6aa" stop-opacity="0.28"/>
+          <stop offset="100%" stop-color="#edd7a2" stop-opacity="0"/>
         </linearGradient>
-        <linearGradient id="trailRightGradient" x1="100%" y1="100%" x2="0%" y2="0%">
-          <stop offset="0%"   stop-color="#b56f49" stop-opacity="0.08"/>
-          <stop offset="14%"  stop-color="#b56f49" stop-opacity="0.65"/>
-          <stop offset="35%"  stop-color="#b56f49" stop-opacity="1"/>
-          <stop offset="72%"  stop-color="#b56f49" stop-opacity="1"/>
-          <stop offset="90%"  stop-color="#b56f49" stop-opacity="0.55"/>
-          <stop offset="100%" stop-color="#b56f49" stop-opacity="0.06"/>
+        <linearGradient id="trailFillRight" gradientUnits="userSpaceOnUse" x1="700" y1="490" x2="420" y2="290">
+          <stop offset="0%" stop-color="#edd7a2" stop-opacity="0"/>
+          <stop offset="32%" stop-color="#e8d0a0" stop-opacity="0.5"/>
+          <stop offset="58%" stop-color="#e4cc96" stop-opacity="0.46"/>
+          <stop offset="82%" stop-color="#ead6aa" stop-opacity="0.28"/>
+          <stop offset="100%" stop-color="#edd7a2" stop-opacity="0"/>
         </linearGradient>
+        <mask id="trailMaskLeft" maskUnits="userSpaceOnUse">
+          <path class="trail-reveal past-left"
+            d="M152,462 C178,456 196,468 214,450 C232,432 246,444 268,424 C290,404 302,416 324,390 C346,364 358,352 376,332 C390,316 402,308 416,300"/>
+        </mask>
+        <mask id="trailMaskRight" maskUnits="userSpaceOnUse">
+          <path class="trail-reveal past-right"
+            d="M688,462 C662,456 644,468 626,450 C608,432 594,444 572,424 C550,404 538,416 516,390 C494,364 482,352 464,332 C450,316 438,308 424,300"/>
+        </mask>
         <linearGradient id="ridgeMainGradient" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%"   stop-color="#708163" stop-opacity="0.06"/>
           <stop offset="12%"  stop-color="#708163" stop-opacity="0.45"/>
@@ -277,30 +295,34 @@
            C143,144 142,135 150,132" />
 
       <g class="tree t1">
-        <path d="M145,326 L145,360"/>
-        <path d="M130,342 L145,316 L160,342 Z"/>
+        <path class="trunk" d="M145,348 L145,366"/>
+        <path class="bough" d="M127,354 Q145,328 163,354 Q145,346 127,354 Z"/>
+        <path class="bough" d="M132,340 Q145,314 158,340 Q145,332 132,340 Z"/>
+        <path class="bough" d="M137,326 Q145,304 153,326 Q145,318 137,326 Z"/>
       </g>
       <g class="tree t2">
-        <path d="M230,304 L230,338"/>
-        <path d="M215,320 L230,294 L245,320 Z"/>
+        <path class="trunk" d="M230,324 L230,340"/>
+        <path class="bough" d="M216,330 Q230,310 244,330 Q230,324 216,330 Z"/>
+        <path class="bough" d="M220,318 Q230,300 240,318 Q230,312 220,318 Z"/>
+        <path class="bough" d="M224,308 Q230,294 236,308 Q230,302 224,308 Z"/>
       </g>
       <g class="tree t3">
-        <path d="M610,304 L610,338"/>
-        <path d="M595,320 L610,294 L625,320 Z"/>
+        <path class="trunk" d="M610,324 L610,340"/>
+        <path class="bough" d="M596,330 Q610,310 624,330 Q610,324 596,330 Z"/>
+        <path class="bough" d="M600,318 Q610,300 620,318 Q610,312 600,318 Z"/>
+        <path class="bough" d="M604,308 Q610,294 616,308 Q610,302 604,308 Z"/>
       </g>
       <g class="tree t4">
-        <path d="M695,326 L695,360"/>
-        <path d="M680,342 L695,316 L710,342 Z"/>
+        <path class="trunk" d="M695,348 L695,366"/>
+        <path class="bough" d="M677,354 Q695,328 713,354 Q695,346 677,354 Z"/>
+        <path class="bough" d="M682,340 Q695,314 708,340 Q695,332 682,340 Z"/>
+        <path class="bough" d="M687,326 Q695,304 703,326 Q695,318 687,326 Z"/>
       </g>
 
-      <path class="past-trail past-left" stroke="url(#trailLeftGradient)"
-        d="M155,455
-           C215,448 260,430 304,404
-           C350,377 383,339 414,302" />
-      <path class="past-trail past-right" stroke="url(#trailRightGradient)"
-        d="M685,455
-           C625,448 580,430 536,404
-           C490,377 457,339 426,302" />
+      <path class="trail-fill" fill="url(#trailFillLeft)" mask="url(#trailMaskLeft)"
+        d="M 154.7,480.0 L 164.0,478.0 L 172.0,477.3 L 180.6,477.1 L 190.2,476.6 L 200.9,474.7 L 212.0,470.1 L 221.6,463.0 L 228.1,456.6 L 232.4,453.7 L 237.3,451.7 L 243.8,449.8 L 252.1,447.3 L 261.5,442.9 L 271.1,436.1 L 279.7,428.4 L 286.2,423.8 L 292.3,420.8 L 299.1,418.1 L 306.9,414.7 L 315.5,409.4 L 324.3,401.5 L 333.3,390.8 L 341.2,381.0 L 348.3,372.3 L 354.8,364.5 L 361.1,357.0 L 367.4,349.5 L 373.9,341.8 L 380.6,333.8 L 385.9,327.6 L 391.0,322.2 L 396.0,317.4 L 401.1,313.1 L 406.2,309.2 L 411.5,305.5 L 417.1,301.9 L 414.9,298.1 L 409.0,301.3 L 403.2,304.5 L 397.4,308.1 L 391.6,312.0 L 385.8,316.5 L 379.8,321.6 L 373.7,327.6 L 366.5,335.0 L 359.4,342.2 L 352.5,349.0 L 345.5,356.0 L 338.2,363.4 L 330.4,371.5 L 321.9,380.8 L 313.1,390.0 L 305.7,395.5 L 299.4,398.5 L 292.9,400.4 L 285.4,402.3 L 276.6,405.5 L 266.9,410.9 L 257.7,418.0 L 250.5,422.1 L 244.4,424.0 L 238.0,425.1 L 230.5,426.2 L 221.5,428.6 L 211.6,433.5 L 203.4,439.9 L 197.9,443.3 L 193.7,444.2 L 188.4,444.3 L 181.2,443.7 L 172.0,443.0 L 160.8,442.8 L 149.3,444.0 L 140.6,447.8 L 135.0,455.4 L 134.0,464.7 L 137.8,473.4 L 145.4,479.0 Z"/>
+      <path class="trail-fill" fill="url(#trailFillRight)" mask="url(#trailMaskRight)"
+        d="M 685.3,480.0 L 676.0,478.0 L 668.0,477.3 L 659.4,477.1 L 649.8,476.6 L 639.1,474.7 L 628.0,470.1 L 618.4,463.0 L 611.9,456.6 L 607.6,453.7 L 602.7,451.7 L 596.2,449.8 L 587.9,447.3 L 578.5,442.9 L 568.9,436.1 L 560.3,428.4 L 553.8,423.8 L 547.7,420.8 L 540.9,418.1 L 533.1,414.7 L 524.5,409.4 L 515.7,401.5 L 506.7,390.8 L 498.8,381.0 L 491.7,372.3 L 485.2,364.5 L 478.9,357.0 L 472.6,349.5 L 466.1,341.8 L 459.4,333.8 L 454.1,327.6 L 449.0,322.2 L 444.0,317.4 L 438.9,313.1 L 433.8,309.2 L 428.5,305.5 L 422.9,301.9 L 425.1,298.1 L 431.0,301.3 L 436.8,304.5 L 442.6,308.1 L 448.4,312.0 L 454.2,316.5 L 460.2,321.6 L 466.3,327.6 L 473.5,335.0 L 480.6,342.2 L 487.5,349.0 L 494.5,356.0 L 501.8,363.4 L 509.6,371.5 L 518.1,380.8 L 526.9,390.0 L 534.3,395.5 L 540.6,398.5 L 547.1,400.4 L 554.6,402.3 L 563.4,405.5 L 573.1,410.9 L 582.3,418.0 L 589.5,422.1 L 595.6,424.0 L 602.0,425.1 L 609.5,426.2 L 618.5,428.6 L 628.4,433.5 L 636.6,439.9 L 642.1,443.3 L 646.3,444.2 L 651.6,444.3 L 658.8,443.7 L 668.0,443.0 L 679.2,442.8 L 690.7,444.0 L 699.4,447.8 L 705.0,455.4 L 706.0,464.7 L 702.2,473.4 L 694.6,479.0 Z"/>
 
       <g class="future-mountain">
         <path class="future-ridge back" stroke="url(#futureRidgeGradient)"
@@ -383,6 +405,11 @@
         <h3>Album</h3>
         <p>ふたりの思い出の写真</p>
       </a>
+      <a class="card" id="menuLink" href="menu.html">
+        <div class="icon">🍽️</div>
+        <h3>お品書き</h3>
+        <p>本日のお料理</p>
+      </a>
     </nav>
 
     <footer>Thank you for celebrating with us.</footer>
@@ -422,6 +449,7 @@ if (guest && guests[guest]) {
 const suffix = guest ? "?guest=" + encodeURIComponent(guest) : "";
 document.getElementById("profileLink").href = "profile.html" + suffix;
 document.getElementById("albumLink").href = "album.html" + suffix;
+document.getElementById("menuLink").href = "menu.html" + suffix;
 </script>
 </body>
 </html>
