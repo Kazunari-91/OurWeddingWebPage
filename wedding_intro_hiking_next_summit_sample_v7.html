@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wedding Intro - Next Summit Sample v4</title>
+<style>
+:root{
+  --bg:#fbf7ef;
+  --text:#3f3a36;
+  --sub:#857b73;
+  --green:#708163;
+  --green-light:#aab79a;
+  --green-future:#95a08b;
+  --gold:#d3a54b;
+  --trail-past:#b56f49;   /* 山道を茶色に戻す */
+  --cloud:#bdb4ac;
+  --black:#222222;
+}
+
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+}
+body{display:grid;place-items:center}
+.stage{position:relative;width:min(94vw,900px);height:min(86vh,680px)}
+svg{position:absolute;inset:0;width:100%;height:100%}
+
+.ridge{
+  fill:none;
+  stroke-width:3;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:1800;
+  stroke-dashoffset:1800;
+  animation:draw 1.8s ease .15s forwards;
+}
+.ridge.back{
+  stroke-width:2.1;
+  animation-delay:.42s;
+}
+
+.past-trail{
+  fill:none;
+  stroke-width:2.6;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:1000;
+  stroke-dashoffset:1000;
+  animation:draw 1.4s ease forwards;
+}
+.past-left{animation-delay:1s}
+.past-right{animation-delay:1.12s}
+
+.sun,.cloud,.tree{
+  opacity:0;
+  animation:fadeIn .8s ease forwards;
+}
+.sun{fill:var(--gold);animation-delay:.7s}
+.cloud{
+  fill:none;
+  stroke:var(--cloud);
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  animation-delay:.8s;
+}
+.tree{
+  fill:none;
+  stroke:var(--green);
+  stroke-width:2.15;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.t1{animation-delay:.9s}
+.t2{animation-delay:1.05s}
+.t3{animation-delay:1.2s}
+.t4{animation-delay:1.35s}
+
+/* 次の山 */
+.future-mountain{
+  opacity:0;
+  animation:futureMountainIn 1.25s ease 4.15s forwards;
+}
+.future-ridge{
+  fill:none;
+  stroke-width:2.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  opacity:.8;
+}
+.future-ridge.back{
+  stroke:#c3cabd;
+  stroke-width:1.7;
+  opacity:.7;
+}
+.future-flag{
+  opacity:0;
+  animation:fadeIn .7s ease 5.05s forwards;
+}
+
+/* ハイカー */
+.person-line{
+  fill:none;
+  stroke:var(--text);
+  stroke-width:3;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.head{fill:var(--bg);stroke:var(--text);stroke-width:3}
+
+/* 帽子とザックを黒塗り */
+.hat-fill{
+  fill:var(--black);
+}
+.hat-brim{
+  fill:none;
+  stroke:var(--black);
+  stroke-width:2.4;
+  stroke-linecap:round;
+}
+.bag{
+  fill:var(--black);
+  opacity:1;
+}
+
+.walker{
+  opacity:0;
+  transform-box:view-box;
+  transform-origin:0 0;
+}
+.walker.left{animation:walkLeft 2.8s linear 1.55s forwards}
+.walker.right{animation:walkRight 2.8s linear 1.75s forwards}
+
+.bob{transform-box:fill-box;transform-origin:center}
+.left .bob{animation:bobDuring 2.8s linear 1.55s forwards}
+.right .bob{animation:bobDuring 2.8s linear 1.75s forwards}
+
+/* 合流後、少し寄って次の山を見る */
+.meet-left{
+  animation:meetLeft .55s ease 4.45s forwards, lookRight .55s ease 4.95s forwards;
+}
+.meet-right{
+  animation:meetRight .55s ease 4.45s forwards, lookRight .55s ease 4.95s forwards;
+}
+
+/* タイトル */
+.title{
+  position:absolute;
+  left:50%;
+  top:72%;
+  width:100%;
+  text-align:center;
+  transform:translateX(-50%);
+  opacity:0;
+  animation:titleIn .9s ease 5.25s forwards;
+}
+.title h1{
+  margin:0;
+  font-size:clamp(30px,5vw,46px);
+  font-weight:500;
+  letter-spacing:.06em;
+}
+.date{
+  margin:.72rem 0 0;
+  color:var(--sub);
+  letter-spacing:.17em;
+  font-size:clamp(13px,2vw,16px);
+}
+.tagline{
+  margin:.9rem 0 0;
+  color:var(--green);
+  font-size:13px;
+  letter-spacing:.12em;
+}
+
+.replay{
+  position:absolute;
+  right:12px;
+  bottom:10px;
+  border:none;
+  background:transparent;
+  color:#8d837b;
+  font-size:12px;
+  cursor:pointer;
+  padding:8px 10px;
+}
+
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+@keyframes bobDuring{
+  0%{transform:translateY(0)}
+  8%{transform:translateY(-2px)}
+  16%{transform:translateY(0)}
+  24%{transform:translateY(-2px)}
+  32%{transform:translateY(0)}
+  40%{transform:translateY(-2px)}
+  48%{transform:translateY(0)}
+  56%{transform:translateY(-2px)}
+  64%{transform:translateY(0)}
+  72%{transform:translateY(-2px)}
+  80%{transform:translateY(0)}
+  88%{transform:translateY(-1px)}
+  100%{transform:translateY(0)}
+}
+
+@keyframes walkLeft{
+  0%{opacity:0;transform:translate(175px,445px) rotate(-3deg)}
+  4%{opacity:1}
+  16%{transform:translate(220px,434px) rotate(-2deg)}
+  32%{transform:translate(270px,409px) rotate(-1deg)}
+  48%{transform:translate(320px,375px)}
+  64%{transform:translate(360px,338px) rotate(1deg)}
+  82%{transform:translate(390px,306px)}
+  100%{opacity:1;transform:translate(405px,292px)}
+}
+
+@keyframes walkRight{
+  0%{opacity:0;transform:translate(665px,445px) rotate(3deg)}
+  4%{opacity:1}
+  16%{transform:translate(620px,434px) rotate(2deg)}
+  32%{transform:translate(570px,409px) rotate(1deg)}
+  48%{transform:translate(520px,375px)}
+  64%{transform:translate(480px,338px) rotate(-1deg)}
+  82%{transform:translate(450px,306px)}
+  100%{opacity:1;transform:translate(435px,292px)}
+}
+
+@keyframes meetLeft{
+  from{transform:translateX(0)}
+  to{transform:translateX(6px)}
+}
+@keyframes meetRight{
+  from{transform:translateX(0)}
+  to{transform:translateX(-6px)}
+}
+@keyframes lookRight{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(-2deg)}
+}
+
+@keyframes futureMountainIn{
+  0%{
+    opacity:0;
+    transform:translateY(18px) scale(.98);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@keyframes titleIn{
+  from{opacity:0;transform:translate(-50%,10px)}
+  to{opacity:1;transform:translate(-50%,0)}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-delay:0ms!important;
+  }
+}
+</style>
+</head>
+<body>
+
+<main class="stage" id="stage">
+<svg viewBox="0 0 840 680" aria-hidden="true">
+  <defs>
+    <!-- 山道：両端だけ薄く、中央はしっかり茶色 -->
+    <linearGradient id="trailLeftGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#b56f49" stop-opacity="0.08"/>
+      <stop offset="14%"  stop-color="#b56f49" stop-opacity="0.65"/>
+      <stop offset="35%"  stop-color="#b56f49" stop-opacity="1"/>
+      <stop offset="72%"  stop-color="#b56f49" stop-opacity="1"/>
+      <stop offset="90%"  stop-color="#b56f49" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#b56f49" stop-opacity="0.06"/>
+    </linearGradient>
+
+    <linearGradient id="trailRightGradient" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%"   stop-color="#b56f49" stop-opacity="0.08"/>
+      <stop offset="14%"  stop-color="#b56f49" stop-opacity="0.65"/>
+      <stop offset="35%"  stop-color="#b56f49" stop-opacity="1"/>
+      <stop offset="72%"  stop-color="#b56f49" stop-opacity="1"/>
+      <stop offset="90%"  stop-color="#b56f49" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#b56f49" stop-opacity="0.06"/>
+    </linearGradient>
+  
+    <!-- 山の稜線：中央を残して左右端だけ薄く -->
+    <linearGradient id="ridgeMainGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#708163" stop-opacity="0.06"/>
+      <stop offset="12%"  stop-color="#708163" stop-opacity="0.45"/>
+      <stop offset="28%"  stop-color="#708163" stop-opacity="1"/>
+      <stop offset="72%"  stop-color="#708163" stop-opacity="1"/>
+      <stop offset="88%"  stop-color="#708163" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#708163" stop-opacity="0.06"/>
+    </linearGradient>
+
+    <linearGradient id="ridgeBackGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#aab79a" stop-opacity="0.04"/>
+      <stop offset="12%"  stop-color="#aab79a" stop-opacity="0.30"/>
+      <stop offset="28%"  stop-color="#aab79a" stop-opacity="0.75"/>
+      <stop offset="72%"  stop-color="#aab79a" stop-opacity="0.75"/>
+      <stop offset="88%"  stop-color="#aab79a" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#aab79a" stop-opacity="0.04"/>
+    </linearGradient>
+
+    <linearGradient id="futureRidgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#95a08b" stop-opacity="0.03"/>
+      <stop offset="15%"  stop-color="#95a08b" stop-opacity="0.25"/>
+      <stop offset="35%"  stop-color="#95a08b" stop-opacity="0.75"/>
+      <stop offset="75%"  stop-color="#95a08b" stop-opacity="0.75"/>
+      <stop offset="90%"  stop-color="#95a08b" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#95a08b" stop-opacity="0.03"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 現在いる山 -->
+  <path class="ridge back" stroke="url(#ridgeBackGradient)"
+    d="M55,280
+       C135,248 205,232 268,242
+       C333,252 378,226 420,220
+       C462,226 507,252 572,242
+       C635,232 705,248 785,280" />
+
+  <path class="ridge" stroke="url(#ridgeMainGradient)"
+    d="M65,340
+       C145,310 220,288 285,290
+       C340,292 382,268 420,245
+       C458,268 500,292 555,290
+       C620,288 695,310 775,340" />
+
+  <!-- 太陽は1つだけ -->
+  <circle class="sun" cx="635" cy="110" r="19"/>
+
+  <path class="cloud"
+    d="M150,132
+       C166,114 193,116 203,132
+       C214,123 233,128 239,144
+       L153,144
+       C143,144 142,135 150,132" />
+
+  <g class="tree t1">
+    <path d="M145,326 L145,360"/>
+    <path d="M130,342 L145,316 L160,342 Z"/>
+  </g>
+  <g class="tree t2">
+    <path d="M230,304 L230,338"/>
+    <path d="M215,320 L230,294 L245,320 Z"/>
+  </g>
+  <g class="tree t3">
+    <path d="M610,304 L610,338"/>
+    <path d="M595,320 L610,294 L625,320 Z"/>
+  </g>
+  <g class="tree t4">
+    <path d="M695,326 L695,360"/>
+    <path d="M680,342 L695,316 L710,342 Z"/>
+  </g>
+
+  <!-- これまでの道 -->
+  <path class="past-trail past-left" stroke="url(#trailLeftGradient)"
+    d="M155,455
+       C215,448 260,430 304,404
+       C350,377 383,339 414,302" />
+
+  <path class="past-trail past-right" stroke="url(#trailRightGradient)"
+    d="M685,455
+       C625,448 580,430 536,404
+       C490,377 457,339 426,302" />
+
+  <!-- 次の山が奥に現れる -->
+  <g class="future-mountain">
+    <path class="future-ridge back" stroke="url(#futureRidgeGradient)"
+      d="M450,258
+         C500,242 548,236 590,240
+         C625,243 658,227 690,214
+         C720,224 752,240 792,252" />
+
+    <path class="future-ridge" stroke="url(#futureRidgeGradient)"
+      d="M455,276
+         C510,262 553,256 592,258
+         C630,260 660,242 690,220
+         C718,240 751,258 798,270" />
+
+    <g class="future-flag">
+      <path d="M690,202 L690,224"
+            stroke="var(--green-future)"
+            stroke-width="2.2"
+            stroke-linecap="round"/>
+      <path d="M690,202 L706,207 L690,213 Z"
+            fill="#ba724d"/>
+    </g>
+  </g>
+
+  <!-- 左ハイカー -->
+  <g class="walker left">
+    <g class="bob meet-left">
+      <circle class="head" cx="0" cy="0" r="7.2"/>
+      <path class="hat-fill" d="M-8,-7 C-4,-13 4,-13 8,-7 L8,-3 L-8,-3 Z"/>
+      <path class="hat-brim" d="M-11,-5 L11,-5"/>
+      <path class="person-line" d="M-1,8 L5,28"/>
+      <path class="person-line" d="M2,15 L-10,22"/>
+      <path class="person-line" d="M3,16 L14,23"/>
+      <path class="person-line" d="M5,28 L-4,42"/>
+      <path class="person-line" d="M5,28 L18,36"/>
+      <path class="bag"
+        d="M-13,11 C-18,14 -18,25 -12,29
+           C-8,30 -5,29 -3,26 L-3,14
+           C-5,11 -8,10 -13,11 Z"/>
+    </g>
+  </g>
+
+  <!-- 右ハイカー -->
+  <g class="walker right">
+    <g class="bob meet-right">
+      <circle class="head" cx="0" cy="0" r="7.2"/>
+      <path class="hat-fill" d="M-8,-7 C-4,-13 4,-13 8,-7 L8,-3 L-8,-3 Z"/>
+      <path class="hat-brim" d="M-11,-5 L11,-5"/>
+      <path class="person-line" d="M1,8 L-5,28"/>
+      <path class="person-line" d="M-2,15 L10,22"/>
+      <path class="person-line" d="M-3,16 L-14,23"/>
+      <path class="person-line" d="M-5,28 L4,42"/>
+      <path class="person-line" d="M-5,28 L-18,36"/>
+      <path class="bag"
+        d="M13,11 C18,14 18,25 12,29
+           C8,30 5,29 3,26 L3,14
+           C5,11 8,10 13,11 Z"/>
+    </g>
+  </g>
+
+</svg>
+
+<section class="title">
+  <h1>Kazunari &amp; Shiraho</h1>
+  <div class="date">2026.10.25 · IZUMO</div>
+  <div class="tagline">ふたりで、次の景色へ。</div>
+</section>
+
+<button class="replay" onclick="replay()">Replay</button>
+</main>
+
+<script>
+function replay(){
+  const oldStage=document.getElementById('stage');
+  const newStage=oldStage.cloneNode(true);
+  oldStage.replaceWith(newStage);
+  newStage.querySelector('.replay').onclick=replay;
+}
+</script>
+
+</body>
+</html>

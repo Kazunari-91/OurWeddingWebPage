@@ -9,11 +9,197 @@
     :root{--bg:#fffaf3;--card:#ffffff;--ink:#3f342c;--sub:#7f6b5d;--accent:#c97947;--line:#ead8c8}
     *{box-sizing:border-box}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink)}
-    .wrap{max-width:760px;margin:auto;padding:28px 18px 48px}
-    .hero{text-align:center;padding:42px 12px 26px}
-    .hero .small{letter-spacing:.16em;color:var(--sub);font-size:12px}
-    h1{font-family:Georgia,serif;font-weight:500;font-size:38px;margin:10px 0}
-    .date{color:var(--sub)}
+
+    .intro{
+      --text:#3f3a36;
+      --muted:#857b73;
+      --green:#708163;
+      --green-future:#95a08b;
+      --gold:#d3a54b;
+      --cloud:#bdb4ac;
+      --black:#222222;
+      position:relative;
+      width:min(94vw,900px);
+      height:min(86vh,680px);
+      margin:18px auto 0;
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+      overflow:hidden;
+    }
+    .intro svg{position:absolute;inset:0;width:100%;height:100%}
+    .ridge{
+      fill:none;
+      stroke-width:3;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      stroke-dasharray:1800;
+      stroke-dashoffset:1800;
+      animation:draw 1.8s ease .15s forwards;
+    }
+    .ridge.back{stroke-width:2.1;animation-delay:.42s}
+    .past-trail{
+      fill:none;
+      stroke-width:2.6;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      stroke-dasharray:1000;
+      stroke-dashoffset:1000;
+      animation:draw 1.4s ease forwards;
+    }
+    .past-left{animation-delay:1s}
+    .past-right{animation-delay:1.12s}
+    .sun,.cloud,.tree{opacity:0;animation:fadeIn .8s ease forwards}
+    .sun{fill:var(--gold);animation-delay:.7s}
+    .cloud{
+      fill:none;
+      stroke:var(--cloud);
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      animation-delay:.8s;
+    }
+    .tree{
+      fill:none;
+      stroke:var(--green);
+      stroke-width:2.15;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .t1{animation-delay:.9s}
+    .t2{animation-delay:1.05s}
+    .t3{animation-delay:1.2s}
+    .t4{animation-delay:1.35s}
+    .future-mountain{opacity:0;animation:futureMountainIn 1.25s ease 4.15s forwards}
+    .future-ridge{
+      fill:none;
+      stroke-width:2.5;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      opacity:.8;
+    }
+    .future-ridge.back{stroke:#c3cabd;stroke-width:1.7;opacity:.7}
+    .future-flag{opacity:0;animation:fadeIn .7s ease 5.05s forwards}
+    .person-line{
+      fill:none;
+      stroke:var(--text);
+      stroke-width:3;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .head{fill:#fbf7ef;stroke:var(--text);stroke-width:3}
+    .hat-fill{fill:var(--black)}
+    .hat-brim{
+      fill:none;
+      stroke:var(--black);
+      stroke-width:2.4;
+      stroke-linecap:round;
+    }
+    .bag{fill:var(--black);opacity:1}
+    .walker{opacity:0;transform-box:view-box;transform-origin:0 0}
+    .walker.left{animation:walkLeft 2.8s linear 1.55s forwards}
+    .walker.right{animation:walkRight 2.8s linear 1.75s forwards}
+    .bob{transform-box:fill-box;transform-origin:center}
+    .left .bob{animation:bobDuring 2.8s linear 1.55s forwards}
+    .right .bob{animation:bobDuring 2.8s linear 1.75s forwards}
+    .meet-left{animation:meetLeft .55s ease 4.45s forwards, lookRight .55s ease 4.95s forwards}
+    .meet-right{animation:meetRight .55s ease 4.45s forwards, lookRight .55s ease 4.95s forwards}
+    .intro .title{
+      position:absolute;
+      left:50%;
+      top:72%;
+      width:100%;
+      text-align:center;
+      transform:translateX(-50%);
+      opacity:0;
+      animation:titleIn .9s ease 5.25s forwards;
+    }
+    .intro .title h1{
+      margin:0;
+      font-family:Georgia,serif;
+      font-size:clamp(30px,5vw,46px);
+      font-weight:500;
+      letter-spacing:.06em;
+    }
+    .intro .date{
+      margin:.72rem 0 0;
+      color:var(--muted);
+      letter-spacing:.17em;
+      font-size:clamp(13px,2vw,16px);
+    }
+    .tagline{
+      margin:.9rem 0 0;
+      color:var(--green);
+      font-size:13px;
+      letter-spacing:.12em;
+    }
+    .replay{
+      position:absolute;
+      right:12px;
+      bottom:10px;
+      border:none;
+      background:transparent;
+      color:#8d837b;
+      font-size:12px;
+      cursor:pointer;
+      padding:8px 10px;
+    }
+
+    @keyframes draw{to{stroke-dashoffset:0}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes bobDuring{
+      0%{transform:translateY(0)}
+      8%{transform:translateY(-2px)}
+      16%{transform:translateY(0)}
+      24%{transform:translateY(-2px)}
+      32%{transform:translateY(0)}
+      40%{transform:translateY(-2px)}
+      48%{transform:translateY(0)}
+      56%{transform:translateY(-2px)}
+      64%{transform:translateY(0)}
+      72%{transform:translateY(-2px)}
+      80%{transform:translateY(0)}
+      88%{transform:translateY(-1px)}
+      100%{transform:translateY(0)}
+    }
+    @keyframes walkLeft{
+      0%{opacity:0;transform:translate(175px,445px) rotate(-3deg)}
+      4%{opacity:1}
+      16%{transform:translate(220px,434px) rotate(-2deg)}
+      32%{transform:translate(270px,409px) rotate(-1deg)}
+      48%{transform:translate(320px,375px)}
+      64%{transform:translate(360px,338px) rotate(1deg)}
+      82%{transform:translate(390px,306px)}
+      100%{opacity:1;transform:translate(405px,292px)}
+    }
+    @keyframes walkRight{
+      0%{opacity:0;transform:translate(665px,445px) rotate(3deg)}
+      4%{opacity:1}
+      16%{transform:translate(620px,434px) rotate(2deg)}
+      32%{transform:translate(570px,409px) rotate(1deg)}
+      48%{transform:translate(520px,375px)}
+      64%{transform:translate(480px,338px) rotate(-1deg)}
+      82%{transform:translate(450px,306px)}
+      100%{opacity:1;transform:translate(435px,292px)}
+    }
+    @keyframes meetLeft{from{transform:translateX(0)}to{transform:translateX(6px)}}
+    @keyframes meetRight{from{transform:translateX(0)}to{transform:translateX(-6px)}}
+    @keyframes lookRight{from{transform:rotate(0deg)}to{transform:rotate(-2deg)}}
+    @keyframes futureMountainIn{
+      0%{opacity:0;transform:translateY(18px) scale(.98)}
+      100%{opacity:1;transform:translateY(0) scale(1)}
+    }
+    @keyframes titleIn{
+      from{opacity:0;transform:translate(-50%,10px)}
+      to{opacity:1;transform:translate(-50%,0)}
+    }
+    @media (prefers-reduced-motion: reduce){
+      .intro *,.intro *::before,.intro *::after{
+        animation-duration:.01ms!important;
+        animation-delay:0ms!important;
+      }
+    }
+
+    .wrap{max-width:760px;margin:auto;padding:8px 18px 48px}
     .message{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;margin:14px 0 26px;box-shadow:0 7px 20px rgba(70,40,20,.05)}
     .message h2{margin:0 0 12px;font-size:21px}
     .message p{line-height:1.9;margin:0;white-space:pre-line}
@@ -23,17 +209,169 @@
     .card h3{margin:12px 0 5px}
     .card p{margin:0;color:var(--sub);font-size:14px;line-height:1.6}
     footer{text-align:center;color:var(--sub);font-size:12px;margin-top:38px}
-    @media(max-width:520px){.menu{grid-template-columns:1fr}.hero{padding-top:28px}h1{font-size:32px}}
+    @media(max-width:520px){
+      .menu{grid-template-columns:1fr}
+      .intro{height:min(78vh,560px);margin-top:8px}
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <section class="hero">
-      <div class="small">OUR WEDDING</div>
-      <h1>Kazunari & Shiraho</h1>
-      <div class="date">2026.10.25 · Izumo</div>
-    </section>
+  <section class="intro" id="stage" aria-label="イントロ">
+    <svg viewBox="0 0 840 680" aria-hidden="true">
+      <defs>
+        <linearGradient id="trailLeftGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#b56f49" stop-opacity="0.08"/>
+          <stop offset="14%"  stop-color="#b56f49" stop-opacity="0.65"/>
+          <stop offset="35%"  stop-color="#b56f49" stop-opacity="1"/>
+          <stop offset="72%"  stop-color="#b56f49" stop-opacity="1"/>
+          <stop offset="90%"  stop-color="#b56f49" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#b56f49" stop-opacity="0.06"/>
+        </linearGradient>
+        <linearGradient id="trailRightGradient" x1="100%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%"   stop-color="#b56f49" stop-opacity="0.08"/>
+          <stop offset="14%"  stop-color="#b56f49" stop-opacity="0.65"/>
+          <stop offset="35%"  stop-color="#b56f49" stop-opacity="1"/>
+          <stop offset="72%"  stop-color="#b56f49" stop-opacity="1"/>
+          <stop offset="90%"  stop-color="#b56f49" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#b56f49" stop-opacity="0.06"/>
+        </linearGradient>
+        <linearGradient id="ridgeMainGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#708163" stop-opacity="0.06"/>
+          <stop offset="12%"  stop-color="#708163" stop-opacity="0.45"/>
+          <stop offset="28%"  stop-color="#708163" stop-opacity="1"/>
+          <stop offset="72%"  stop-color="#708163" stop-opacity="1"/>
+          <stop offset="88%"  stop-color="#708163" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="#708163" stop-opacity="0.06"/>
+        </linearGradient>
+        <linearGradient id="ridgeBackGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#aab79a" stop-opacity="0.04"/>
+          <stop offset="12%"  stop-color="#aab79a" stop-opacity="0.30"/>
+          <stop offset="28%"  stop-color="#aab79a" stop-opacity="0.75"/>
+          <stop offset="72%"  stop-color="#aab79a" stop-opacity="0.75"/>
+          <stop offset="88%"  stop-color="#aab79a" stop-opacity="0.30"/>
+          <stop offset="100%" stop-color="#aab79a" stop-opacity="0.04"/>
+        </linearGradient>
+        <linearGradient id="futureRidgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#95a08b" stop-opacity="0.03"/>
+          <stop offset="15%"  stop-color="#95a08b" stop-opacity="0.25"/>
+          <stop offset="35%"  stop-color="#95a08b" stop-opacity="0.75"/>
+          <stop offset="75%"  stop-color="#95a08b" stop-opacity="0.75"/>
+          <stop offset="90%"  stop-color="#95a08b" stop-opacity="0.28"/>
+          <stop offset="100%" stop-color="#95a08b" stop-opacity="0.03"/>
+        </linearGradient>
+      </defs>
 
+      <path class="ridge back" stroke="url(#ridgeBackGradient)"
+        d="M55,280
+           C135,248 205,232 268,242
+           C333,252 378,226 420,220
+           C462,226 507,252 572,242
+           C635,232 705,248 785,280" />
+      <path class="ridge" stroke="url(#ridgeMainGradient)"
+        d="M65,340
+           C145,310 220,288 285,290
+           C340,292 382,268 420,245
+           C458,268 500,292 555,290
+           C620,288 695,310 775,340" />
+
+      <circle class="sun" cx="635" cy="110" r="19"/>
+      <path class="cloud"
+        d="M150,132
+           C166,114 193,116 203,132
+           C214,123 233,128 239,144
+           L153,144
+           C143,144 142,135 150,132" />
+
+      <g class="tree t1">
+        <path d="M145,326 L145,360"/>
+        <path d="M130,342 L145,316 L160,342 Z"/>
+      </g>
+      <g class="tree t2">
+        <path d="M230,304 L230,338"/>
+        <path d="M215,320 L230,294 L245,320 Z"/>
+      </g>
+      <g class="tree t3">
+        <path d="M610,304 L610,338"/>
+        <path d="M595,320 L610,294 L625,320 Z"/>
+      </g>
+      <g class="tree t4">
+        <path d="M695,326 L695,360"/>
+        <path d="M680,342 L695,316 L710,342 Z"/>
+      </g>
+
+      <path class="past-trail past-left" stroke="url(#trailLeftGradient)"
+        d="M155,455
+           C215,448 260,430 304,404
+           C350,377 383,339 414,302" />
+      <path class="past-trail past-right" stroke="url(#trailRightGradient)"
+        d="M685,455
+           C625,448 580,430 536,404
+           C490,377 457,339 426,302" />
+
+      <g class="future-mountain">
+        <path class="future-ridge back" stroke="url(#futureRidgeGradient)"
+          d="M450,258
+             C500,242 548,236 590,240
+             C625,243 658,227 690,214
+             C720,224 752,240 792,252" />
+        <path class="future-ridge" stroke="url(#futureRidgeGradient)"
+          d="M455,276
+             C510,262 553,256 592,258
+             C630,260 660,242 690,220
+             C718,240 751,258 798,270" />
+        <g class="future-flag">
+          <path d="M690,202 L690,224"
+                stroke="var(--green-future)"
+                stroke-width="2.2"
+                stroke-linecap="round"/>
+          <path d="M690,202 L706,207 L690,213 Z"
+                fill="#ba724d"/>
+        </g>
+      </g>
+
+      <g class="walker left">
+        <g class="bob meet-left">
+          <circle class="head" cx="0" cy="0" r="7.2"/>
+          <path class="hat-fill" d="M-8,-7 C-4,-13 4,-13 8,-7 L8,-3 L-8,-3 Z"/>
+          <path class="hat-brim" d="M-11,-5 L11,-5"/>
+          <path class="person-line" d="M-1,8 L5,28"/>
+          <path class="person-line" d="M2,15 L-10,22"/>
+          <path class="person-line" d="M3,16 L14,23"/>
+          <path class="person-line" d="M5,28 L-4,42"/>
+          <path class="person-line" d="M5,28 L18,36"/>
+          <path class="bag"
+            d="M-13,11 C-18,14 -18,25 -12,29
+               C-8,30 -5,29 -3,26 L-3,14
+               C-5,11 -8,10 -13,11 Z"/>
+        </g>
+      </g>
+      <g class="walker right">
+        <g class="bob meet-right">
+          <circle class="head" cx="0" cy="0" r="7.2"/>
+          <path class="hat-fill" d="M-8,-7 C-4,-13 4,-13 8,-7 L8,-3 L-8,-3 Z"/>
+          <path class="hat-brim" d="M-11,-5 L11,-5"/>
+          <path class="person-line" d="M1,8 L-5,28"/>
+          <path class="person-line" d="M-2,15 L10,22"/>
+          <path class="person-line" d="M-3,16 L-14,23"/>
+          <path class="person-line" d="M-5,28 L4,42"/>
+          <path class="person-line" d="M-5,28 L-18,36"/>
+          <path class="bag"
+            d="M13,11 C18,14 18,25 12,29
+               C8,30 5,29 3,26 L3,14
+               C5,11 8,10 13,11 Z"/>
+        </g>
+      </g>
+    </svg>
+
+    <div class="title">
+      <h1>Kazunari &amp; Shiraho</h1>
+      <div class="date">2026.10.25 · Izumo</div>
+      <div class="tagline">ふたりで、次の景色へ。</div>
+    </div>
+    <button class="replay" type="button">Replay</button>
+  </section>
+
+  <main class="wrap">
     <section class="message">
       <h2 id="guestTitle">ようこそ</h2>
       <p id="guestMessage">今日は私たちの結婚の日にお越しいただき、ありがとうございます。
@@ -57,6 +395,15 @@
   </main>
 
 <script>
+function replay(){
+  const oldStage=document.getElementById('stage');
+  const newStage=oldStage.cloneNode(true);
+  oldStage.replaceWith(newStage);
+  newStage.querySelector('.replay').addEventListener('click', replay);
+}
+
+document.querySelector('.replay').addEventListener('click', replay);
+
 const guests = {
   father: {
     title: "お父さんへ",
