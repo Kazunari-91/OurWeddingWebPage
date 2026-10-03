@@ -27,7 +27,7 @@
     .scroller{position:relative}
     .strip{
       display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
-      scrollbar-width:none;padding:2px 0 8px;touch-action:manipulation
+      scrollbar-width:none;overscroll-behavior-x:contain;padding:2px 0 8px;touch-action:manipulation
     }
     .strip::-webkit-scrollbar{display:none}
     .photo{
@@ -112,7 +112,7 @@
           <h4>新郎</h4>
           <div class="scroller">
             <button class="nudge prev" type="button" aria-label="前の写真">‹</button>
-            <div class="strip" data-group="memories-kazunari" tabindex="0"></div>
+            <div class="strip" data-group="history_k" tabindex="0"></div>
             <button class="nudge next" type="button" aria-label="次の写真">›</button>
           </div>
         </div>
@@ -120,7 +120,7 @@
           <h4>新婦</h4>
           <div class="scroller">
             <button class="nudge prev" type="button" aria-label="前の写真">‹</button>
-            <div class="strip" data-group="memories-shiraho" tabindex="0"></div>
+            <div class="strip" data-group="history_s" tabindex="0"></div>
             <button class="nudge next" type="button" aria-label="次の写真">›</button>
           </div>
         </div>
@@ -130,7 +130,7 @@
         <h3>一成の趣味</h3>
         <div class="scroller">
           <button class="nudge prev" type="button" aria-label="前の写真">‹</button>
-          <div class="strip" data-group="hobby-kazunari" tabindex="0"></div>
+          <div class="strip" data-group="hobby_k" tabindex="0"></div>
           <button class="nudge next" type="button" aria-label="次の写真">›</button>
         </div>
       </div>
@@ -139,7 +139,7 @@
         <h3>白保の趣味</h3>
         <div class="scroller">
           <button class="nudge prev" type="button" aria-label="前の写真">‹</button>
-          <div class="strip" data-group="hobby-shiraho" tabindex="0"></div>
+          <div class="strip" data-group="hobby_s" tabindex="0"></div>
           <button class="nudge next" type="button" aria-label="次の写真">›</button>
         </div>
       </div>
@@ -162,16 +162,16 @@
 const guest = new URLSearchParams(location.search).get("guest");
 if (guest) document.getElementById("backLink").href = "index.html?guest=" + encodeURIComponent(guest);
 
-// 枚数だけ変える。画像は images/profile/グループ名/01.jpg から順に置きます。
+// 枚数だけ変える。画像は images/history_k/01.jpg のように、各フォルダへ 01.jpg から順に置きます。
 const photoGroups = {
-  "memories-kazunari": { title: "新郎のこれまでの写真", count: 4 },
-  "memories-shiraho": { title: "新婦のこれまでの写真", count: 4 },
-  "hobby-kazunari": { title: "一成の趣味", count: 3 },
-  "hobby-shiraho": { title: "白保の趣味", count: 3 }
+  history_k: { title: "新郎のこれまでの写真", count: 4 },
+  history_s: { title: "新婦のこれまでの写真", count: 4 },
+  hobby_k: { title: "一成の趣味", count: 3 },
+  hobby_s: { title: "白保の趣味", count: 3 }
 };
 
 function photoSrc(groupId, index){
-  return `images/profile/${groupId}/${String(index + 1).padStart(2, "0")}.jpg`;
+  return `images/${groupId}/${String(index + 1).padStart(2, "0")}.jpg`;
 }
 
 function makeSlide(groupId, index){
@@ -200,26 +200,74 @@ function makeSlide(groupId, index){
   return button;
 }
 
+function loopBounds(strip, count){
+  const start = strip.children[count].offsetLeft;
+  const end = strip.children[count * 2].offsetLeft;
+  return { start, end, width: end - start };
+}
+
+function parkInMiddle(strip, count){
+  const { start, width } = loopBounds(strip, count);
+  if (width <= 0) return;
+  const within = ((strip.scrollLeft - start) % width + width) % width;
+  strip.scrollLeft = start + within;
+}
+
 document.querySelectorAll(".strip").forEach((strip) => {
   const groupId = strip.dataset.group;
   const count = photoGroups[groupId]?.count ?? 0;
   const scroller = strip.parentElement;
-  for (let index = 0; index < count; index += 1) strip.append(makeSlide(groupId, index));
-  const stride = () => {
-    const first = strip.children[0];
-    const second = strip.children[1];
-    if (!first || !second) return first ? first.offsetWidth : 0;
-    return second.offsetLeft - first.offsetLeft;
+  if (count < 1) return;
+
+  const appendCopy = () => {
+    for (let index = 0; index < count; index += 1) strip.append(makeSlide(groupId, index));
   };
+  appendCopy();
+  appendCopy();
+  appendCopy();
+  let guard = 0;
+  while (guard < 8) {
+    const { end } = loopBounds(strip, count);
+    if (end <= 0) break;
+    if (strip.scrollWidth - strip.clientWidth >= end) break;
+    appendCopy();
+    guard += 1;
+  }
+
+  const stride = () => strip.children[1].offsetLeft - strip.children[0].offsetLeft;
+  let queued = false;
+  let pending = null;
+  const keepLooping = () => {
+    const { start, end, width } = loopBounds(strip, count);
+    if (width <= 0) return;
+    if (strip.scrollLeft >= start - 1 && strip.scrollLeft < end - 1) return;
+    const within = ((strip.scrollLeft - start) % width + width) % width;
+    pending = start + within;
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      if (pending == null) return;
+      const next = pending;
+      pending = null;
+      strip.scrollLeft = next;
+      keepLooping();
+    });
+  };
+
+  requestAnimationFrame(() => { strip.scrollLeft = loopBounds(strip, count).start; });
   strip.addEventListener("scroll", () => {
     if (Math.abs(strip.scrollLeft - Number(strip.dataset.pointerLeft || strip.scrollLeft)) > 6) {
       strip.dataset.dragged = "1";
     }
+    keepLooping();
   }, { passive: true });
   strip.addEventListener("pointerdown", () => {
     strip.dataset.dragged = "0";
     strip.dataset.pointerLeft = String(strip.scrollLeft);
   });
+  window.addEventListener("resize", () => parkInMiddle(strip, count));
+
   scroller.querySelector(".prev").addEventListener("click", () => {
     strip.scrollBy({ left: -stride(), behavior: "smooth" });
   });
