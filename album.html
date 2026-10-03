@@ -9,6 +9,7 @@
     :root{--bg:#fffaf3;--ink:#3f342c;--sub:#7f6b5d;--accent:#c97947;--line:#ead8c8}
     *{box-sizing:border-box}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink)}
+    body.viewer-open{overflow:hidden}
     .wrap{max-width:820px;margin:auto;padding:26px 18px 48px}
     .back{text-decoration:none;color:var(--accent);font-size:14px}
     h1{font-family:Georgia,serif;font-weight:500;font-size:34px;margin:26px 0 8px}
@@ -32,10 +33,74 @@
     .group{margin:0 0 32px;scroll-margin-top:76px}
     .group:last-child{min-height:calc(100vh - 110px)}
     .group h2{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:.06em}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .photo{aspect-ratio:1/1;border-radius:14px;background:linear-gradient(145deg,#ead6c4,#f8eee5);display:grid;place-items:center;text-align:center;color:var(--sub);font-size:13px;padding:12px;overflow:hidden}
-    .photo img{width:100%;height:100%;object-fit:cover}
-    @media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
+    .scroller{position:relative}
+    .strip{
+      display:flex;gap:10px;
+      overflow-x:auto;scroll-snap-type:x mandatory;
+      scrollbar-width:none;overscroll-behavior-x:contain;
+      padding:2px 0 8px;
+      touch-action:manipulation
+    }
+    .strip::-webkit-scrollbar{display:none}
+    .photo{
+      flex:0 0 72%;scroll-snap-align:start;scroll-snap-stop:normal;
+      position:relative;aspect-ratio:1/1;border:0;border-radius:14px;
+      background:linear-gradient(145deg,#ead6c4,#f8eee5);
+      color:var(--sub);font:inherit;font-size:13px;padding:0;
+      overflow:hidden;cursor:pointer
+    }
+    .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .photo .label{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:12px;line-height:1.6}
+    .photo.has-image .label{display:none}
+    .nudge{
+      display:none;position:absolute;top:50%;transform:translateY(-58%);
+      z-index:1;width:36px;height:36px;border-radius:50%;
+      border:1px solid var(--line);background:#fff;color:var(--ink);
+      place-items:center;font-size:22px;line-height:1;cursor:pointer;padding:0
+    }
+    .nudge.prev{left:8px}
+    .nudge.next{right:8px}
+    .empty{margin:0;color:var(--sub);font-size:14px}
+    .viewer{
+      border:0;padding:0;margin:0;width:100%;height:100%;max-width:none;max-height:none;
+      background:transparent;color:#fff
+    }
+    .viewer::backdrop{background:rgba(36,28,22,.92)}
+    .viewer-close{
+      position:absolute;top:16px;right:16px;
+      border:0;background:transparent;color:#fff;
+      font:inherit;font-size:15px;cursor:pointer;padding:8px 4px
+    }
+    .viewer-stage{
+      height:100%;display:flex;align-items:center;justify-content:center;gap:8px;
+      padding:64px 12px 72px
+    }
+    .viewer-frame{
+      flex:1;min-width:0;height:100%;
+      display:grid;place-items:center
+    }
+    .viewer-frame img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px}
+    .viewer-ph{
+      width:min(420px,100%);aspect-ratio:1/1;border-radius:14px;
+      background:linear-gradient(145deg,#ead6c4,#f8eee5);color:var(--sub);
+      display:grid;place-items:center;text-align:center;padding:18px;line-height:1.7
+    }
+    .viewer.has-image .viewer-ph{display:none}
+    .viewer:not(.has-image) .viewer-frame img{display:none}
+    .viewer-nav{
+      flex:none;width:42px;height:42px;border-radius:50%;
+      border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);
+      color:#fff;font-size:26px;line-height:1;cursor:pointer
+    }
+    .viewer-nav[hidden]{display:none}
+    .viewer-count{
+      position:absolute;left:0;right:0;bottom:22px;margin:0;
+      text-align:center;font-size:14px;letter-spacing:.08em
+    }
+    @media(min-width:700px){
+      .photo{flex-basis:46%}
+      .nudge{display:grid}
+    }
   </style>
 </head>
 <body>
@@ -53,43 +118,64 @@
 
     <section class="group" id="daily">
       <h2>日常</h2>
-      <div class="grid">
-        <div class="photo">写真 1<br>images/daily/01.jpg</div>
-        <div class="photo">写真 2<br>images/daily/02.jpg</div>
-        <div class="photo">写真 3<br>images/daily/03.jpg</div>
+      <div class="scroller">
+        <button class="nudge prev" type="button" aria-label="前の写真">‹</button>
+        <div class="strip" data-album="daily" tabindex="0"></div>
+        <button class="nudge next" type="button" aria-label="次の写真">›</button>
       </div>
     </section>
 
     <section class="group" id="outing">
       <h2>お出かけ</h2>
-      <div class="grid">
-        <div class="photo">写真 1<br>images/outing/01.jpg</div>
-        <div class="photo">写真 2<br>images/outing/02.jpg</div>
-        <div class="photo">写真 3<br>images/outing/03.jpg</div>
+      <div class="scroller">
+        <button class="nudge prev" type="button" aria-label="前の写真">‹</button>
+        <div class="strip" data-album="outing" tabindex="0"></div>
+        <button class="nudge next" type="button" aria-label="次の写真">›</button>
       </div>
     </section>
 
     <section class="group" id="cooking">
       <h2>料理</h2>
-      <div class="grid">
-        <div class="photo">写真 1<br>images/cooking/01.jpg</div>
-        <div class="photo">写真 2<br>images/cooking/02.jpg</div>
-        <div class="photo">写真 3<br>images/cooking/03.jpg</div>
+      <div class="scroller">
+        <button class="nudge prev" type="button" aria-label="前の写真">‹</button>
+        <div class="strip" data-album="cooking" tabindex="0"></div>
+        <button class="nudge next" type="button" aria-label="次の写真">›</button>
       </div>
     </section>
 
     <section class="group" id="photo-wedding">
       <h2>フォトウェディング</h2>
-      <div class="grid">
-        <div class="photo">写真 1<br>images/photo-wedding/01.jpg</div>
-        <div class="photo">写真 2<br>images/photo-wedding/02.jpg</div>
-        <div class="photo">写真 3<br>images/photo-wedding/03.jpg</div>
+      <div class="scroller">
+        <button class="nudge prev" type="button" aria-label="前の写真">‹</button>
+        <div class="strip" data-album="photo-wedding" tabindex="0"></div>
+        <button class="nudge next" type="button" aria-label="次の写真">›</button>
       </div>
     </section>
   </main>
+
+  <dialog class="viewer" id="viewer">
+    <button class="viewer-close" id="viewerClose" type="button">閉じる</button>
+    <div class="viewer-stage">
+      <button class="viewer-nav" id="viewerPrev" type="button" aria-label="前の写真">‹</button>
+      <div class="viewer-frame">
+        <img id="viewerImg" alt="">
+        <div class="viewer-ph" id="viewerPh"></div>
+      </div>
+      <button class="viewer-nav" id="viewerNext" type="button" aria-label="次の写真">›</button>
+    </div>
+    <p class="viewer-count" id="viewerCount"></p>
+  </dialog>
 <script>
 const guest = new URLSearchParams(location.search).get("guest");
 if (guest) document.getElementById("backLink").href = "index.html?guest=" + encodeURIComponent(guest);
+
+// 各項目の枚数。画像は images/項目id/01.jpg からこの枚数だけ読みます。
+const photoCounts = {
+  daily: 5,
+  outing: 5,
+  cooking: 5,
+  "photo-wedding": 5
+};
 
 const links = [...document.querySelectorAll(".cats a")];
 const sections = links.map((link) => document.querySelector(link.getAttribute("href")));
@@ -121,6 +207,200 @@ function updateActive(){
 
 document.addEventListener("scroll", updateActive, { passive: true });
 updateActive();
+
+function photoSrc(albumId, index){
+  return `images/${albumId}/${String(index + 1).padStart(2, "0")}.jpg`;
+}
+
+function makeSlide(albumId, index){
+  const src = photoSrc(albumId, index);
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "photo";
+  button.dataset.index = String(index);
+  button.setAttribute("aria-label", `写真 ${index + 1} を拡大`);
+  const img = document.createElement("img");
+  img.alt = "";
+  img.draggable = false;
+  img.src = src;
+  const label = document.createElement("span");
+  label.className = "label";
+  label.append(`写真 ${index + 1}`, document.createElement("br"), src);
+  img.addEventListener("load", () => button.classList.add("has-image"));
+  img.addEventListener("error", () => img.remove());
+  button.append(img, label);
+  button.addEventListener("click", () => {
+    const strip = button.closest(".strip");
+    const dragged = strip.dataset.dragged === "1";
+    strip.dataset.dragged = "0";
+    if (dragged) return;
+    openViewer(albumId, index);
+  });
+  return button;
+}
+
+function loopBounds(strip, count){
+  const start = strip.children[count].offsetLeft;
+  const end = strip.children[count * 2].offsetLeft;
+  return { start, end, width: end - start };
+}
+
+function parkInMiddle(strip, count){
+  const { start, width } = loopBounds(strip, count);
+  if (width <= 0) return;
+  const within = ((strip.scrollLeft - start) % width + width) % width;
+  strip.scrollLeft = start + within;
+}
+
+function setupStrip(strip){
+  const albumId = strip.dataset.album;
+  const count = photoCounts[albumId] ?? 0;
+  const scroller = strip.parentElement;
+  if (count < 1) {
+    const note = document.createElement("p");
+    note.className = "empty";
+    note.textContent = "写真はまだありません。";
+    scroller.replaceWith(note);
+    return;
+  }
+
+  const appendCopy = () => {
+    for (let index = 0; index < count; index += 1) strip.append(makeSlide(albumId, index));
+  };
+  appendCopy();
+  appendCopy();
+  appendCopy();
+  let guard = 0;
+  while (guard < 8) {
+    const { end } = loopBounds(strip, count);
+    if (end <= 0) break;
+    if (strip.scrollWidth - strip.clientWidth >= end) break;
+    appendCopy();
+    guard += 1;
+  }
+
+  const stride = () => strip.children[1].offsetLeft - strip.children[0].offsetLeft;
+  let queued = false;
+  let pending = null;
+  const keepLooping = () => {
+    const { start, end, width } = loopBounds(strip, count);
+    if (width <= 0) return;
+    if (strip.scrollLeft >= start - 1 && strip.scrollLeft < end - 1) return;
+    const within = ((strip.scrollLeft - start) % width + width) % width;
+    pending = start + within;
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      if (pending == null) return;
+      const next = pending;
+      pending = null;
+      strip.scrollLeft = next;
+      keepLooping();
+    });
+  };
+
+  requestAnimationFrame(() => { strip.scrollLeft = loopBounds(strip, count).start; });
+  strip.addEventListener("scroll", () => {
+    if (Math.abs(strip.scrollLeft - Number(strip.dataset.pointerLeft || strip.scrollLeft)) > 6) {
+      strip.dataset.dragged = "1";
+    }
+    keepLooping();
+  }, { passive: true });
+  strip.addEventListener("pointerdown", () => {
+    strip.dataset.dragged = "0";
+    strip.dataset.pointerLeft = String(strip.scrollLeft);
+  });
+  window.addEventListener("resize", () => parkInMiddle(strip, count));
+
+  scroller.querySelector(".prev").addEventListener("click", () => {
+    strip.scrollBy({ left: -stride(), behavior: "smooth" });
+  });
+  scroller.querySelector(".next").addEventListener("click", () => {
+    strip.scrollBy({ left: stride(), behavior: "smooth" });
+  });
+  strip.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    event.preventDefault();
+    strip.scrollBy({ left: event.key === "ArrowRight" ? stride() : -stride(), behavior: "smooth" });
+  });
+}
+
+document.querySelectorAll(".strip").forEach(setupStrip);
+
+const viewer = document.getElementById("viewer");
+const viewerImg = document.getElementById("viewerImg");
+const viewerPh = document.getElementById("viewerPh");
+const viewerCount = document.getElementById("viewerCount");
+const viewerPrev = document.getElementById("viewerPrev");
+const viewerNext = document.getElementById("viewerNext");
+let viewerAlbum = "";
+let viewerIndex = 0;
+let viewerReturn = null;
+
+function renderViewer(){
+  const count = photoCounts[viewerAlbum] ?? 0;
+  const title = document.querySelector(`#${CSS.escape(viewerAlbum)} h2`).textContent;
+  const src = photoSrc(viewerAlbum, viewerIndex);
+  viewer.classList.remove("has-image");
+  viewerPh.replaceChildren(`写真 ${viewerIndex + 1}`, document.createElement("br"), src);
+  viewerImg.alt = `${title}の写真 ${viewerIndex + 1}`;
+  viewerImg.src = src;
+  viewerCount.textContent = `${title} · ${viewerIndex + 1} / ${count}`;
+  const single = count < 2;
+  viewerPrev.hidden = single;
+  viewerNext.hidden = single;
+}
+
+function openViewer(albumId, index){
+  viewerAlbum = albumId;
+  viewerIndex = index;
+  viewerReturn = document.activeElement;
+  renderViewer();
+  viewer.showModal();
+  document.body.classList.add("viewer-open");
+}
+
+function stepViewer(delta){
+  const count = photoCounts[viewerAlbum] ?? 0;
+  if (count < 1) return;
+  viewerIndex = (viewerIndex + delta + count) % count;
+  renderViewer();
+}
+
+viewerImg.addEventListener("load", () => viewer.classList.add("has-image"));
+viewerImg.addEventListener("error", () => viewer.classList.remove("has-image"));
+document.getElementById("viewerClose").addEventListener("click", () => viewer.close());
+viewerPrev.addEventListener("click", () => stepViewer(-1));
+viewerNext.addEventListener("click", () => stepViewer(1));
+viewer.addEventListener("close", () => {
+  document.body.classList.remove("viewer-open");
+  if (viewerReturn instanceof HTMLElement) viewerReturn.focus();
+});
+viewer.addEventListener("click", (event) => {
+  if (event.target === viewer || event.target.classList.contains("viewer-stage") || event.target.classList.contains("viewer-frame")) {
+    viewer.close();
+  }
+});
+viewer.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowRight") { event.preventDefault(); stepViewer(1); }
+  if (event.key === "ArrowLeft") { event.preventDefault(); stepViewer(-1); }
+});
+
+let swipeX = 0;
+let swipeY = 0;
+viewer.addEventListener("pointerdown", (event) => {
+  if (event.target.closest("button")) return;
+  swipeX = event.clientX;
+  swipeY = event.clientY;
+});
+viewer.addEventListener("pointerup", (event) => {
+  if (event.target.closest("button")) return;
+  const dx = event.clientX - swipeX;
+  const dy = event.clientY - swipeY;
+  if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+  stepViewer(dx < 0 ? 1 : -1);
+});
 </script>
 </body>
 </html>
