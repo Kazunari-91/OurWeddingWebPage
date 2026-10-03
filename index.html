@@ -111,8 +111,6 @@
     .bob{transform-box:fill-box;transform-origin:center}
     .left .bob{animation:bobDuring 2.8s linear 1.55s forwards}
     .right .bob{animation:bobDuring 2.8s linear 1.75s forwards}
-    .meet-left{animation:meetLeft .55s ease 4.45s forwards, lookRight .55s ease 4.95s forwards}
-    .meet-right{animation:meetRight .55s ease 4.45s forwards, lookRight .55s ease 4.95s forwards}
     .intro .title{
       position:absolute;
       left:50%;
@@ -195,9 +193,6 @@
       86%{transform:translate(459px,280px)}
       100%{opacity:1;transform:translate(437px,264px)}
     }
-    @keyframes meetLeft{from{transform:translateX(0)}to{transform:translateX(6px)}}
-    @keyframes meetRight{from{transform:translateX(0)}to{transform:translateX(-6px)}}
-    @keyframes lookRight{from{transform:rotate(0deg)}to{transform:rotate(-2deg)}}
     @keyframes futureMountainIn{
       0%{opacity:0;transform:translateY(18px) scale(.98)}
       100%{opacity:1;transform:translateY(0) scale(1)}
@@ -360,9 +355,9 @@
           <path class="hat-brim" d="M-11,-5 L11,-5"/>
           <path class="person-line" d="M-1,8 L5,28"/>
           <path class="person-line" d="M2,15 L-6,20"/>
-          <path class="person-line" d="M3,16 L14,23"/>
+          <path class="person-line" d="M3,16 L18,22"/>
           <path class="person-line" d="M5,28 L-4,42"/>
-          <path class="person-line" d="M5,28 L18,36"/>
+          <path class="person-line" d="M5,28 L8,38"/>
         </g>
       </g>
       <g class="walker right">
@@ -376,9 +371,9 @@
           <path class="hat-brim" d="M-11,-5 L11,-5"/>
           <path class="person-line" d="M1,8 L-5,28"/>
           <path class="person-line" d="M-2,15 L6,20"/>
-          <path class="person-line" d="M-3,16 L-14,23"/>
+          <path class="person-line" d="M-3,16 L-18,22"/>
           <path class="person-line" d="M-5,28 L4,42"/>
-          <path class="person-line" d="M-5,28 L-18,36"/>
+          <path class="person-line" d="M-5,28 L-8,38"/>
         </g>
       </g>
     </svg>
